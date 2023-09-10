@@ -20,11 +20,11 @@ export const ComicCard = ({ comics }: ComicsProps) => {
             {comics?.map((comic) => (
 
                 <>
-                    <Grid key={comic.id} item xs={6} md={3}>
+                    <Grid key={comic.key} item xs={6} md={3}>
                         <Card sx={{ maxWidth: 345 }}>
                             <CardMedia
                                 sx={{ height: 140 }}
-                                image={comic.thumbnail.path}
+                                image={comic.thumbnail}
                                 title="green iguana"
                             />
                             <CardContent>
