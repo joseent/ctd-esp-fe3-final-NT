@@ -53,7 +53,7 @@ export const LoadMore = () => {
       }, [isEndOfPage]);
   return (
     <div>
-        <ComicCard comics={comics}/>
+        <ComicCard comicsArr={comics}/>
         <Spinner/>
     </div>
   )

@@ -10,14 +10,16 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 
 export interface ComicsProps {
-    comics: Comics[] | null;
+    comicsArr: Comics[] | null;
 }
 
 
-export const ComicCard = ({ comics }: ComicsProps) => {
+export const ComicCard = ({ comicsArr }: ComicsProps) => {
+    // console.log('comics', comicsArr)
+    
     return (
         <>
-            {comics?.map((comic) => (
+            {comicsArr?.length >= 1 && comicsArr?.map((comic) => (
 
                 <>
                     <Grid key={comic.key} item xs={6} md={3}>
