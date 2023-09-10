@@ -1,13 +1,65 @@
-import { CharacterInter } from 'interface/character';
-import { NextPage } from 'next'
-import React from 'react'
+import BodySingle from 'dh-marvel/components/layouts/body/single/body-single';
+import { getComic, getComics } from 'dh-marvel/services/marvel/marvel.service';
+import { Comics } from 'interface/character';
+import Grid from '@mui/material/Grid';
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import Head from 'next/head';
+import { ComicDetail } from 'dh-marvel/components/ui/comic-detail';
+
 
 interface Props {
-    character: CharacterInter;
-  }
+  comic: Comics;
+}
 
-export const Character:NextPage<Props> = ({character}) => {
+const ComicID: NextPage<Props> = ({ comic }) => {
+  console.log('comicID', comic)
+
   return (
-    <div>Character</div>
+
+    <>
+      <Head>
+        <title>DH-MARVEL</title>
+        <meta
+          name="description"
+          content={`Comic de Marvel.${comic.title}`}
+        />
+      </Head>
+      <BodySingle title={comic.title}>
+        <Grid container>
+          <ComicDetail comic={comic} />
+            </Grid>
+      </BodySingle>
+
+    </>
   )
 }
+
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const id = parseInt(params?.id as string);
+  const data = await getComic(id);
+
+  return {
+    props: {
+      comic: data,
+    },
+    revalidate: 10,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const data: Comics = await getComics();
+
+  const paths = data.data.results.map((comic) => {
+    return { params: { id: comic.id.toString() } };
+  });
+
+  return {
+    paths,
+    fallback: true,
+  };
+};
+
+
+
+export default ComicID

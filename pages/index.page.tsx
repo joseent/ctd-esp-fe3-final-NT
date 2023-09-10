@@ -18,7 +18,7 @@ interface Props {
 
 const Index: NextPage<Props> = ({ comics }) => {
     const [loadedComics, setLoadedComics] = useState<Comics[]>(comics || []);
-    // console.log('loadedComics', loadedComics)
+    console.log('loadedComics', loadedComics)
 
     return (
         <>
@@ -30,6 +30,7 @@ const Index: NextPage<Props> = ({ comics }) => {
 
             <BodySingle title={"Sample"}>
                 <Grid container spacing={2}>
+                
                     <ComicCard comicsArr={loadedComics} />
                     <LoadMore />
                 </Grid>

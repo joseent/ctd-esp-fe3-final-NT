@@ -1,8 +1,11 @@
 import { NextPage } from 'next'
 import React from 'react'
 
-export const Checkout:NextPage = () => {
+const Checkout:NextPage = () => {
   return (
     <div>Checkout</div>
   )
 }
+
+
+export default Checkout

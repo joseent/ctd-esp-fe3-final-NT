@@ -1,8 +1,10 @@
 import { NextPage } from 'next'
 import React from 'react'
 
-export const ConfirmPage:NextPage = () => {
+ const ConfirmPage:NextPage = () => {
   return (
     <div>Confirm</div>
   )
 }
+
+export default ConfirmPage

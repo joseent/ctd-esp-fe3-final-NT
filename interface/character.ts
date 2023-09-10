@@ -1,11 +1,17 @@
 
 export interface Comics {
 	key: string;
-	name: string;
+	id: number;
 	title: string;
+	description: string;
 	url: string;
 	thumbnail: string;
-	descripcion: string;
+	price: number;
+	oldPrice: number;
+	stock: number;
+	dates: string;
+	creators: string;
+
 
 }
 

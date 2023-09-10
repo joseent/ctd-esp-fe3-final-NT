@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['dh-frontend.cdn.prismic.io',"https://gateway.marvel.com/v1/public" ],
+        domains: ['dh-frontend.cdn.prismic.io', "i.annihil.us" ],
     },
     reactStrictMode: true,
     swcMinify: true,
