@@ -19,7 +19,7 @@ export const ComicCard = ({ comicsArr }: ComicsProps) => {
     
     return (
         <>
-            {comicsArr?.length >= 1 && comicsArr?.map((comic) => (
+            {comicsArr && comicsArr?.map((comic) => (
 
                 <>
                     <Grid key={comic.key} item xs={6} md={3}>
