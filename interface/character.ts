@@ -11,11 +11,14 @@ export interface Comics {
 	stock: number;
 	dates: string;
 	creators: string;
+	characters: CharacterInter[]
 
 
 }
 
 export interface CharacterInter {
-	key:string;
-	name: string
+	name: string;
+	resourceURL: string;
+	thumbnail: string;
+	description: string;
 }

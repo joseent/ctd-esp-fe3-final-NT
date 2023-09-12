@@ -14,11 +14,8 @@ interface Props {
     comics: Comics[];
 }
 
-
-
 const Index: NextPage<Props> = ({ comics }) => {
     const [loadedComics, setLoadedComics] = useState<Comics[]>(comics || []);
-    console.log('loadedComics', loadedComics)
 
     return (
         <>
@@ -28,9 +25,8 @@ const Index: NextPage<Props> = ({ comics }) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <BodySingle title={"Sample"}>
+            <BodySingle title={"Marvel Comics"}>
                 <Grid container spacing={2}>
-                
                     <ComicCard comicsArr={loadedComics} />
                     <LoadMore />
                 </Grid>
@@ -41,7 +37,7 @@ const Index: NextPage<Props> = ({ comics }) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-    const comics = await getComics(1, 12);
+    const comics = await getComics(0, 12);
 
     res.setHeader(
         'Cache-Control',

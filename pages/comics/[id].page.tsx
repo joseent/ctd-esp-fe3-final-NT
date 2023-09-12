@@ -5,6 +5,8 @@ import Grid from '@mui/material/Grid';
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Head from 'next/head';
 import { ComicDetail } from 'dh-marvel/components/ui/comic-detail';
+import { Spinner } from 'dh-marvel/components/ui/spinner';
+import { useRouter } from 'next/router';
 
 
 interface Props {
@@ -12,7 +14,11 @@ interface Props {
 }
 
 const ComicID: NextPage<Props> = ({ comic }) => {
-  console.log('comicID', comic)
+  const router = useRouter();
+
+  if (router.isFallback === true) {
+    return <Spinner />;
+  }
 
   return (
 
@@ -50,7 +56,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const data: Comics = await getComics();
 
-  const paths = data.data.results.map((comic) => {
+  const paths = data?.data.results.map((comic) => {
     return { params: { id: comic.id.toString() } };
   });
 

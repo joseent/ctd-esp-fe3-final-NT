@@ -1,6 +1,6 @@
 "use client";
 
-import { Comics } from "interface/character";
+import { CharacterInter, Comics } from "interface/character";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -11,16 +11,30 @@ import Grid from '@mui/material/Grid';
 import { useRouter } from "next/router";
 import NextLink from "next/link"
 import Image from "next/image";
+import AccordionComp from "./acordeon";
+import character from "dh-marvel/test/mocks/character";
 
 export interface ComicProps {
     comic: Comics | null;
+
 }
 
 const COMIC_GENERAL_DESCRIPTION = "¡Sumérgete en el emocionante universo de Marvel con este increíble cómic! Descubre las asombrosas aventuras de tus héroes y villanos favoritos mientras luchan por la justicia o el caos en una historia llena de acción, misterio y sorpresas. Este cómic te llevará a lugares inimaginables y te sumergirá en un mundo de poderes extraordinarios, batallas épicas y personajes icónicos. ¡No te pierdas esta emocionante entrega que te mantendrá pegado a sus páginas de principio a fin!"
 
+const extractLastNumberFromURL = (url: string) => {
+    const parts = url.split('/');
+    const lastPart = parts[parts.length - 1];
+    const numbers = lastPart.match(/\d+/);
+
+    if (numbers) {
+        return parseInt(numbers[0]);
+    } else {
+        return null;
+    }
+}
 
 export const ComicDetail = ({ comic }: ComicProps) => {
-    console.log('comic.thumbasdasnail', comic?.creators)
+    console.log('comic.stock', comic)
     const router = useRouter();
 
 
@@ -47,7 +61,7 @@ export const ComicDetail = ({ comic }: ComicProps) => {
                                     <Grid item lg={6} md={6}>
                                         <Typography gutterBottom  >
                                             <Typography gutterBottom variant="h5" component="div" fontWeight="bold">
-                                            {comic?.creators?.items[0]?.role}:
+                                                {comic?.creators?.items[0]?.role}:
                                             </Typography>
                                             <Typography gutterBottom variant="body1" component="div" >
                                                 {comic?.creators?.items[0]?.name}
@@ -57,7 +71,7 @@ export const ComicDetail = ({ comic }: ComicProps) => {
                                     <Grid item lg={6} md={6}>
                                         <Typography gutterBottom  >
                                             <Typography gutterBottom variant="h5" component="div" fontWeight="bold">
-                                            {comic?.creators?.items[1]?.role}:
+                                                {comic?.creators?.items[1]?.role}:
                                             </Typography>
                                             <Typography gutterBottom variant="body1" component="div" >
                                                 {comic?.creators?.items[1]?.name}
@@ -83,7 +97,7 @@ export const ComicDetail = ({ comic }: ComicProps) => {
                                         Precio actual:
                                     </Typography>
                                     <Typography gutterBottom variant="body1" component="div" >
-                                        {comic.price}
+                                        {comic?.price}
                                     </Typography>
                                 </Typography>
                             </Grid>
@@ -93,14 +107,33 @@ export const ComicDetail = ({ comic }: ComicProps) => {
                                         Precio anterior:
                                     </Typography>
                                     <Typography gutterBottom variant="body1" component="div" >
-                                        {comic.oldPrice}
+                                        {comic?.oldPrice}
                                     </Typography>
                                 </Typography>
                             </Grid>
                         </Grid>
                     </CardContent>
-                    <CardActions>
-                        <Button size="small">Comprar</Button>
+
+                    {comic?.characters?.items?.map((char) => (<AccordionComp key={char.id} id={char.id} title={char.name} subtitle={extractLastNumberFromURL(char.resourceURI)} url />))}
+                    < CardActions >
+                        {comic?.stock > 0 ? (
+                            <NextLink
+                                href={{ pathname: `/checkout/${comic?.id}` }}
+                            >
+                                <Button
+                                    variant="contained"
+                                >
+                                    COMPRAR
+                                </Button>
+                            </NextLink>
+                        ) : (
+                            <Button
+                                disabled
+                                variant="contained"
+                            >
+                                SIN STOCK
+                            </Button>
+                        )}
                     </CardActions>
                 </Card>
             </Grid >
