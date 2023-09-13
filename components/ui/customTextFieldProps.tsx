@@ -11,7 +11,6 @@ interface CustomTextFieldProps {
   error?: boolean;
   message?: string;
   textFieldProps?: Record<string, any>;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 
   
 }

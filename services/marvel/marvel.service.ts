@@ -1,13 +1,13 @@
 import {generateAuthenticationString} from "dh-marvel/services/marvel/marvel-auth.service";
 import path from "path";
 
-const MARVEL_API_URL = process.env.MARVEL_API_URL;
+const MARVEL_API_URL = process.env.NEXT_PUBLIC_MARVEL_API_URL;
+// const MARVEL_API_URL = "https://gateway.marvel.com/v1/public"
 
 
 const fetchApi = async (endpoint: string, urlParams?: string) => {
     const authString = generateAuthenticationString();
     const url = `${MARVEL_API_URL}/${endpoint}?${authString}&${urlParams || ''}`
-    console.log("Ruta del archivo .env.local:", path.resolve(__dirname, '.env.local'));
     const response = await fetch(url);
     return await response.json();
 }

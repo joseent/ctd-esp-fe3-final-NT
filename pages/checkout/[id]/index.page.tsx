@@ -4,23 +4,21 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react';
 import { Grid, Snackbar, Typography } from '@mui/material';
-import FormEntrega from 'dh-marvel/components/form/FormEntrega';
-import FormPago from 'dh-marvel/components/form/FormPago';
-import { FormProvider, useForm } from 'react-hook-form';
+import FormEntrega from 'dh-marvel/components/form/infoEntrega/FormEntrega';
+import FormPago from 'dh-marvel/components/form/infoPago/FormPago';
+import { useForm } from 'react-hook-form';
 import Button from '@mui/material/Button';
 
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import FormInfoPersonal from 'dh-marvel/components/form/FormInfoPersonal';
-import { schema } from 'dh-marvel/components/form/schema';
+import FormInfoPersonal from 'dh-marvel/components/form/infoPersonal/FormInfoPersonal';
+import { schema } from 'dh-marvel/components/form/infoPersonal/schema';
 import { getComic } from 'dh-marvel/services/marvel/marvel.service';
 import { Spinner } from 'dh-marvel/components/ui/spinner';
 import { Comics } from 'interface/character';
 import { ComicCheckoutCard } from 'dh-marvel/components/ui/comicCheckoutCard';
 import LayoutCheckout from 'dh-marvel/components/layouts/layout-checkout';
-import { CustomTextField } from 'dh-marvel/components/ui/customTextFieldProps';
-import { ErrorMessage } from '@hookform/error-message';
 
 
 const initialData = {
@@ -41,6 +39,9 @@ const initialData = {
     nombreEnTarjeta: "",
     fechaExpiracion: "",
     codigoSeguridad: "",
+  },comic:{
+    nombre:"",
+    precio:""
   }
 };
 
@@ -48,31 +49,33 @@ const initialData = {
 
 const Checkout: NextPage = () => {
 
-  type DataForm = yup.InferType<typeof schema>
-
   const {
-    control,
-    register,
-    formState: { errors },
     handleSubmit,
-    getValues,
-  } = useForm<DataForm>({ resolver: yupResolver(schema), defaultValues: {} });
+  } = useForm();
 
-  const [formData, setFormData] = useState(initialData);
-
+  const [data, setData] = useState(initialData);
   const router = useRouter();
   const { id } = router.query;
   const [comicData, setComicData] = useState<Comics>();
-
-
   const [activeStep, setActiveStep] = useState(0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const onSubmit = async (data: any) => {
-    console.log('data', data)
-    console.log("en submit");
 
-    try {
+  const handleGoBack = () => {
+    setActiveStep(activeStep - 1);
+  };
+
+  const handleGoForward = () => {
+    setActiveStep(activeStep + 1);
+  };
+
+  const handleDataUpdate = (newData: any) => {
+    setData((prevData) => ({ ...prevData, ...newData }));
+  };
+
+
+  const onFinalSubmit = async () => {
+       try {
 
       // router.push('/confirmacion-compra');
       // Aquí puedes realizar la llamada a la API de compra y redirigir al usuario a la página de confirmación si tiene éxito.
@@ -83,6 +86,8 @@ const Checkout: NextPage = () => {
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
+
+
 
 
   useEffect(() => {
@@ -110,177 +115,43 @@ const Checkout: NextPage = () => {
       </Grid>
       <Grid item lg={8}>
         <StepperComp activeStep={activeStep} />
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid >
-            {/* Paso 1: Datos Personales */}
-            {activeStep === 0 && (
-              // <FormInfoPersonal />
-              <>
+        {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+        <Grid >
+          {/* Paso 1: Datos Personales */}
+          {activeStep === 0 && (
+            <FormInfoPersonal
+              data={data.dataPersonal}
+              onUpdate={handleDataUpdate}
+              onNext={handleGoForward}
+              onPrev={handleGoBack}
+              activeStep={activeStep}
+            />
+          )}
 
-                <CustomTextField
-                  name="nombre"
-                  label="Nombre"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                  onChange={(e) => {
-                    setFormData((prevData) => ({
-                      ...prevData,
-                      dataPersonal: {
-                        ...prevData.dataPersonal,
-                        nombre: e.target.value,
-                      },
-                    }));
-                  }}
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="nombre" />
-                </Typography>
+          {/* Paso 2: Dirección de Entrega */}
+          {activeStep === 1 && (
+            <FormEntrega
+              data={data.dataEntrega}
+              onUpdate={handleDataUpdate}
+              onNext={handleGoForward}
+              onPrev={handleGoBack}
+              activeStep={activeStep}
+            />
+          )}
 
-                <CustomTextField
-                  name="apellido"
-                  label="Apellido"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="apellido" />
-                </Typography>
+          {/* Paso 3: Datos de Pago */}
+          {activeStep === 2 && (
+            <FormPago
+              data={data.dataTarjeta}
+              onUpdate={handleDataUpdate}
+              onNext={handleGoForward}
+              onPrev={handleGoBack}
+              activeStep={activeStep}
+            />
+          )}
+        </Grid>
 
-
-                <CustomTextField
-                  name="email"
-                  label="Email"
-                  type="email" // Utiliza el tipo de entrada 'email' para validar automáticamente la dirección de correo electrónico
-                  control={control}
-                  defaultValue=""
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="email" />
-                </Typography>
-
-              </>
-            )}
-
-            {/* Paso 2: Dirección de Entrega */}
-            {activeStep === 1 && (
-              // <FormEntrega />
-              <>
-                <CustomTextField
-                  name="direccion"
-                  label="Dirección"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                  required // Agrega el atributo 'required' para marcarlo como campo requerido
-                />
-
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="direccion" />
-                </Typography>
-                <CustomTextField
-                  name="departamento"
-                  label="Departamento, piso, etc"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                />
-
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="departamento" />
-                </Typography>
-                <CustomTextField
-                  name="ciudad"
-                  label="Ciudad"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                  required // Agrega el atributo 'required' para marcarlo como campo requerido
-                />
-
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="ciudad" />
-                </Typography>
-                <CustomTextField
-                  name="provincia"
-                  label="Provincia"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                  required // Agrega el atributo 'required' para marcarlo como campo requerido
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="provincia" />
-                </Typography>
-
-                <CustomTextField
-                  name="codigoPostal"
-                  label="Código postal"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                  required // Agrega el atributo 'required' para marcarlo como campo requerido
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="codigoPostal" />
-                </Typography>
-              </>
-            )}
-
-            {/* Paso 3: Datos de Pago */}
-            {activeStep === 2 && (
-              // <FormPago />
-              <>
-                <CustomTextField
-                  name="numeroTarjeta"
-                  label="Número de tarjeta"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="numeroTarjeta" />
-                </Typography>
-
-                <CustomTextField
-                  name="nombreEnTarjeta"
-                  label="Nombre como aparece en la tarjeta"
-                  type="text"
-                  control={control}
-                  defaultValue=""
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="nombreEnTarjeta" />
-                </Typography>
-
-                <CustomTextField
-                  name="fechaExpiracion"
-                  label="Fecha de expiración"
-                  type="text" // Puedes usar un campo de texto para la fecha de expiración o implementar un selector de fecha según tus necesidades
-                  control={control}
-                  defaultValue=""
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="fechaExpiracion" />
-                </Typography>
-
-                <CustomTextField
-                  name="codigoSeguridad"
-                  label="Código de seguridad"
-                  type="password" // Usa el tipo de entrada 'password' para ocultar el valor como una contraseña
-                  control={control}
-                  defaultValue=""
-                />
-                <Typography variant='caption' color='red'>
-                  <ErrorMessage errors={errors} name="codigoSeguridad" />
-                </Typography>
-
-              </>
-            )}
-          </Grid>
-
-          <Grid >
+        {/* <Grid >
             {activeStep > 0 ?
               <Button
                 variant="contained"
@@ -312,10 +183,10 @@ const Checkout: NextPage = () => {
               </Button>
 
             }
-          </Grid>
+          </Grid> */}
 
 
-        </form>
+        {/* </form> */}
         <Snackbar
           open={openSnackbar}
           autoHideDuration={6000}
@@ -326,7 +197,6 @@ const Checkout: NextPage = () => {
     </Grid>
   );
 };
+
 (Checkout as any).Layout = LayoutCheckout;
-
-
 export default Checkout
