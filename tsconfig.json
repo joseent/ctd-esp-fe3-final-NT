@@ -44,7 +44,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "types.d.ts"
+    "types.d.ts",
+    "pages/_middleware.page.ts"
   ],
   "exclude": [
     "node_modules"

@@ -44,12 +44,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
             return
         }
         if (body.card.number === validCard) {
+            res.setHeader('set-cookie', 'access-confirmacion=true; path=/; semesite=lax; httponly')
             res.status(200).json({data: body});
             return
         }
         res.status(400).json(ERROR_CARD_DATA_INCORRECT);
     } catch (err) {
-        console.log(err);
         res.status(500).json(ERROR_SERVER);
     }
 

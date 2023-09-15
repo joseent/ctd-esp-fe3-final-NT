@@ -9,9 +9,9 @@ import LayoutCheckout from 'dh-marvel/components/layouts/layout-checkout';
 
 const ConfirmPage: NextPage = () => {
   const [storedData, setstoredData] = useState<ICheckout>()
-  const storedCheckoutDataString = localStorage.getItem("checkoutData");
-
+  
   useEffect(() => {
+    const storedCheckoutDataString = localStorage.getItem("checkoutData");
     if (storedCheckoutDataString) {
       setstoredData(JSON.parse(storedCheckoutDataString))
     }
@@ -32,7 +32,7 @@ const ConfirmPage: NextPage = () => {
 
       <Grid container>
 
-        <Grid item sm={12} spacing={2} sx={{ display: "flex", flexDirection: "column", alignContent: 'center', justifyContent:"center" }} >
+        <Grid item sm={12}  sx={{ display: "flex", flexDirection: "column", alignContent: 'center', justifyContent:"center" }} >
           <Grid item xs={12} sm={12}>
             <Image src={storedData?.order.image}
               width={400}
@@ -44,7 +44,7 @@ const ConfirmPage: NextPage = () => {
           </Grid>
         </Grid>
 
-        <Grid item sm={12} spacing={2} >
+        <Grid item sm={12}  >
           <Grid>
             <Typography variant="h5">Datos Personales:</Typography>
             <Typography>{`Nombre: ${storedData?.customer.name} ${storedData?.customer.lastname}`}</Typography>

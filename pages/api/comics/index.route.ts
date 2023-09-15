@@ -10,15 +10,9 @@ import { Comics } from "interface/comic.type";
 
 type Data = Comics | { error: string; message: string };
 
-type Query = {
-  offset: string;
-  limit: string;
-};
+type Query = { offset: string; limit: string; };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+export default async function handler( req: NextApiRequest, res: NextApiResponse<Data> ) {
   const query = req.query;
 
   const { offset, limit } = query as Query;
@@ -44,7 +38,6 @@ export default async function handler(
 
     res.status(400).json(ERROR_BAD_REQUEST);
   } catch (err) {
-    console.log(err);
     res.status(500).json(ERROR_SERVER);
   }
 }

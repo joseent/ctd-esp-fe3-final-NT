@@ -11,10 +11,11 @@ import FormPago from 'dh-marvel/components/form/infoPago/FormPago';
 import FormInfoPersonal from 'dh-marvel/components/form/infoPersonal/FormInfoPersonal';
 import { getComic } from 'dh-marvel/services/marvel/marvel.service';
 import { Spinner } from 'dh-marvel/components/ui/spinner';
-import { Comics } from 'interface/comic.type';
+import { Comic } from 'interface/comic.type';
 import { ComicCheckoutCard } from 'dh-marvel/components/ui/comicCheckoutCard';
 import LayoutCheckout from 'dh-marvel/components/layouts/layout-checkout';
 import { postCheckout } from 'dh-marvel/services/checkout/checkout.service';
+import { getComicsById } from 'dh-marvel/services/comic/comic.service';
 
 
 
@@ -53,7 +54,7 @@ const Checkout: NextPage = () => {
   const { id } = router.query;
 
   const [data, setData] = useState(initialData);
-  const [comicData, setComicData] = useState<Comics>();
+  const [comicData, setComicData] = useState<Comic>();
   const [error, setError] = useState<string | null>(null);
 
 
@@ -120,7 +121,6 @@ const Checkout: NextPage = () => {
         
         localStorage.setItem("checkoutData", checkoutDataString);
       } else {
-        console.log("ERR", response.error);
 
         setError(`${response.error}- - -${response.message}`);
         setOpenSnackbar(true);
@@ -138,13 +138,15 @@ const Checkout: NextPage = () => {
 
 
   useEffect(() => {
-
-
+    
+    
     if (typeof id === 'string' || typeof id === 'number') {
       const idNumber = typeof id === 'string' ? parseInt(id, 10) : id;
-
+      
       if (idNumber) {
-        getComic(idNumber).then((data) => {
+  
+        getComicsById(idNumber).then((data) => {
+          
           setComicData(data)
           handleDataUpdate({
             comic: {

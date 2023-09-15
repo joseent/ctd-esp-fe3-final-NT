@@ -19,7 +19,6 @@ interface FormInfoPersonalProps {
 
 
 const FormEntrega = ({ data, onUpdate, onNext, onPrev, activeStep }: FormInfoPersonalProps) => {
-  console.log('dataentrega', data)
   type DataForm = yup.InferType<typeof schema>
 
   const {
