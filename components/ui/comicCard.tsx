@@ -1,6 +1,6 @@
 "use client";
 
-import { Comics } from "interface/character";
+import { Comic } from "interface/comic.type";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -12,10 +12,12 @@ import { useRouter } from "next/router";
 import NextLink from "next/link"
 import Image from "next/image";
 import Tooltip from '@mui/material/Tooltip';
-import { getComic } from "dh-marvel/services/marvel/marvel.service";
+// import { getComic } from "dh-marvel/services/marvel/marvel.service";
+import { useEffect } from "react";
+import { getComicsById } from "dh-marvel/services/comic/comic.service";
 
 export interface ComicsProps {
-    comicsArr: Comics[] | null;
+    comicsArr: Comic[] | null;
 }
 
 const cortarYAgregarElipsis = (texto: string, longitudMaxima: number): string => {
@@ -26,11 +28,13 @@ const cortarYAgregarElipsis = (texto: string, longitudMaxima: number): string =>
     }
 }
 
+
+
 export const ComicCard = ({ comicsArr }: ComicsProps) => {
     const router = useRouter();
 
     const handleBuy = async (id: number) => {
-        const response: Comics = await getComic(id);
+        const response: Comic = await getComicsById(id);
 
         if (response.stock > 0) {
             router.push({
@@ -42,14 +46,15 @@ export const ComicCard = ({ comicsArr }: ComicsProps) => {
     };
 
 
+
     return (
         <>
             {comicsArr && comicsArr?.map((comic) => (
 
                 <>
-                    <Grid key={comic.key} item xs={6} md={3}>
-                        <Card key={comic.key} sx={{ maxWidth: 345 }}>
-                            <Image key={comic.key} src={`${comic?.thumbnail?.path}.${comic?.thumbnail?.extension}`}
+                    <Grid key={comic.id} item xs={6} md={3}>
+                        <Card key={comic.id} sx={{ maxWidth: 345 }}>
+                            <Image key={comic.id} src={`${comic?.thumbnail?.path}.${comic?.thumbnail?.extension}`}
                                 width={500}
                                 height={750}
                                 alt="Picture of the author" />
@@ -60,18 +65,19 @@ export const ComicCard = ({ comicsArr }: ComicsProps) => {
                                     </Typography>
                                 </Tooltip>
                             </CardContent>
-                            <CardActions>
+                            <CardActions sx={{ justifyContent: "space-between" }}>
                                 <NextLink href={`/comics/${comic.id}`}>
                                     <Button size="small">Ver Detalle</Button>
                                 </NextLink>
-                                <Button onClick={() => handleBuy(comic.id)}>
+                                < Button onClick={() => handleBuy(comic.id)} color="primary" variant="contained">
                                     COMPRAR
                                 </Button>
                             </CardActions>
                         </Card>
-                    </Grid>
+                    </Grid >
                 </>
-            ))}
+            ))
+            }
         </>
     )
 }

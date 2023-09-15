@@ -1,7 +1,7 @@
 import {generateAuthenticationString} from "dh-marvel/services/marvel/marvel-auth.service";
 import path from "path";
 
-const MARVEL_API_URL = process.env.NEXT_PUBLIC_MARVEL_API_URL;
+const MARVEL_API_URL = process.env.MARVEL_API_URL;
 // const MARVEL_API_URL = "https://gateway.marvel.com/v1/public"
 
 
@@ -18,6 +18,7 @@ export const getComics = async (offset?: number, limit?: number) => {
     if (limit) params.set("limit", `${limit}`);
     return fetchApi("comics", params.toString());
 }
+
 
 export const getComic = async (comicId: number) => {
     const data = await fetchApi(`comics/${comicId}`);

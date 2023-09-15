@@ -3,7 +3,7 @@ import Head from 'next/head';
 import BodySingle from 'dh-marvel/components/layouts/body/single/body-single';
 import Grid from '@mui/material/Grid';
 import { getCharacter, getComics } from 'dh-marvel/services/marvel/marvel.service';
-import { CharacterInter } from 'interface/character';
+import { Character, Characters } from 'interface/character.type';
 import Image from 'next/image';
 import Typography from '@mui/material/Typography';
 import { Spinner } from 'dh-marvel/components/ui/spinner';
@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 
 
 interface Props {
-  characters: CharacterInter;
+  characters: Character;
 }
 
 const Characters: NextPage<Props> = ({ characters }) => {
@@ -23,11 +23,14 @@ const Characters: NextPage<Props> = ({ characters }) => {
   return (
     <>
       <Head>
-        <title>DH-MARVEL</title>
-        <meta
-          name="description"
-          content={`Comic de Marvel.${characters.name}`}
-        />
+        <title>Marvel Comics - Compra tus cómics favoritos en línea</title>
+        <meta name="description" content={`Personaje de Marvel.${characters.name}`} />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="language" content="es" />
+        <meta name="author" content="Jose Emanuel Nieva Toppa - Digital House" />
+        <meta name="keywords" content="Marvel Comics, cómics, compra en línea, superhéroes, historietas" />
+        <meta name="robots" content="index, follow" />
+        <meta httpEquiv="content-type" content="text/html; charset=UTF-8" />
       </Head>
       <BodySingle title={characters.name}>
         <Grid container>
@@ -36,7 +39,7 @@ const Characters: NextPage<Props> = ({ characters }) => {
             width={500}
             height={500}
             alt="Picture of the author"
-            style={{display: "flex",justifyContent: "center"}}
+            style={{ display: "flex", justifyContent: "center" }}
           />
           <Typography gutterBottom variant="h5" component="div" fontWeight="bold">
             {characters.description}
@@ -61,7 +64,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const data: CharacterInter = await getComics();
+  const data: Characters = await getComics();
 
   const paths = data?.data.results.map((character) => {
     return { params: { id: character.id.toString() } };

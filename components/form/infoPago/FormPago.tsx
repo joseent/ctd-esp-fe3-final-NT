@@ -15,10 +15,11 @@ interface FormInfoPersonalProps {
     onNext: () => void;
     onPrev: () => void;
     activeStep: number;
+    checkoutFinal: (data:any) => void
 }
 
 
-const FormPago = ({ data, onUpdate, onNext, onPrev, activeStep }: FormInfoPersonalProps) => {
+const FormPago = ({ data, onUpdate, onNext, onPrev, activeStep, checkoutFinal }: FormInfoPersonalProps) => {
     type DataForm = yup.InferType<typeof schema>
 
     const {
@@ -33,7 +34,9 @@ const FormPago = ({ data, onUpdate, onNext, onPrev, activeStep }: FormInfoPerson
     const onSubmit = async (data: any) => {
 
         const dataValues = getValues()
-        onUpdate({ dataTarjeta: dataValues });
+        // onUpdate({ dataTarjeta: dataValues });
+        // await new Promise(resolve => setTimeout(resolve, 2000));
+        checkoutFinal(dataValues)
         
     };
 

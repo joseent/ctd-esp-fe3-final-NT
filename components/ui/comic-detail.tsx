@@ -1,6 +1,6 @@
 "use client";
 
-import { CharacterInter, Comics } from "interface/character";
+import { CharacterInter, Comics } from "interface/character.type";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';

@@ -6,19 +6,16 @@ import { useEffect, useState } from 'react';
 import { Grid, Snackbar, Typography } from '@mui/material';
 import FormEntrega from 'dh-marvel/components/form/infoEntrega/FormEntrega';
 import FormPago from 'dh-marvel/components/form/infoPago/FormPago';
-import { useForm } from 'react-hook-form';
-import Button from '@mui/material/Button';
 
 
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import FormInfoPersonal from 'dh-marvel/components/form/infoPersonal/FormInfoPersonal';
-import { schema } from 'dh-marvel/components/form/infoPersonal/schema';
 import { getComic } from 'dh-marvel/services/marvel/marvel.service';
 import { Spinner } from 'dh-marvel/components/ui/spinner';
-import { Comics } from 'interface/character';
+import { Comics } from 'interface/comic.type';
 import { ComicCheckoutCard } from 'dh-marvel/components/ui/comicCheckoutCard';
 import LayoutCheckout from 'dh-marvel/components/layouts/layout-checkout';
+import { postCheckout } from 'dh-marvel/services/checkout/checkout.service';
+
 
 
 const initialData = {
@@ -39,27 +36,29 @@ const initialData = {
     nombreEnTarjeta: "",
     fechaExpiracion: "",
     codigoSeguridad: "",
-  },comic:{
-    nombre:"",
-    precio:""
+  },
+  comic: {
+    nombre: "",
+    imagen: "",
+    precio: ""
   }
 };
 
 
 
+
 const Checkout: NextPage = () => {
 
-  const {
-    handleSubmit,
-  } = useForm();
-
-  const [data, setData] = useState(initialData);
   const router = useRouter();
   const { id } = router.query;
+
+  const [data, setData] = useState(initialData);
   const [comicData, setComicData] = useState<Comics>();
+  const [error, setError] = useState<string | null>(null);
+
+
   const [activeStep, setActiveStep] = useState(0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
 
   const handleGoBack = () => {
     setActiveStep(activeStep - 1);
@@ -74,29 +73,87 @@ const Checkout: NextPage = () => {
   };
 
 
-  const onFinalSubmit = async () => {
-       try {
 
-      // router.push('/confirmacion-compra');
-      // Aquí puedes realizar la llamada a la API de compra y redirigir al usuario a la página de confirmación si tiene éxito.
-    } catch (error) {
+  const onFinalSubmit = async ({ dataTarjeta }: any) => {
+
+
+    const checkoutDataFinal = {
+      customer: {
+        name: data.dataPersonal.nombre,
+        lastname: data.dataPersonal.apellido,
+        email: data.dataPersonal.email,
+        address: {
+          address1: data.dataEntrega.direccion,
+          address2: data.dataEntrega.departamento,
+          city: data.dataEntrega.ciudad,
+          state: data.dataEntrega.provincia,
+          zipCode: data.dataEntrega.codigoPostal,
+
+        }
+      },
+      card: {
+        number: dataTarjeta.numeroTarjeta,
+        cvc: dataTarjeta.codigoSeguridad,
+        expDate: dataTarjeta.fechaExpiracion,
+        nameOnCard: dataTarjeta.nombreEnTarjeta,
+      },
+      order: {
+        name: data.comic.nombre,
+        image: data.comic.imagen,
+        price: parseInt(data.comic.precio)
+      }
+    }
+
+    const response = await postCheckout(checkoutDataFinal);
+
+    try {
+      if (!response.error) {
+        
+        router.push('/confirmacion-compra');
+        
+        const checkoutDataLocal = {
+          customer: checkoutDataFinal.customer,
+          order: checkoutDataFinal.order
+        };
+        
+        const checkoutDataString = JSON.stringify(checkoutDataLocal);
+        
+        localStorage.setItem("checkoutData", checkoutDataString);
+      } else {
+        console.log("ERR", response.error);
+
+        setError(`${response.error}- - -${response.message}`);
+        setOpenSnackbar(true);
+      }
+    } catch (error: any) {
+      setError(`${response.error}- - -${response.message}`);
       setOpenSnackbar(true);
     }
   };
+
+
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
 
 
-
-
   useEffect(() => {
+
+
     if (typeof id === 'string' || typeof id === 'number') {
       const idNumber = typeof id === 'string' ? parseInt(id, 10) : id;
 
       if (idNumber) {
         getComic(idNumber).then((data) => {
-          setComicData(data);
+          setComicData(data)
+          handleDataUpdate({
+            comic: {
+              nombre: data.title,
+              imagen: `${data.thumbnail.path}.${data.thumbnail.extension}`,
+              precio: data.price
+            }
+          })
+
         });
       }
     }
@@ -115,7 +172,6 @@ const Checkout: NextPage = () => {
       </Grid>
       <Grid item lg={8}>
         <StepperComp activeStep={activeStep} />
-        {/* <form onSubmit={handleSubmit(onSubmit)}> */}
         <Grid >
           {/* Paso 1: Datos Personales */}
           {activeStep === 0 && (
@@ -147,51 +203,16 @@ const Checkout: NextPage = () => {
               onNext={handleGoForward}
               onPrev={handleGoBack}
               activeStep={activeStep}
+              checkoutFinal={(dataTarjeta) => onFinalSubmit({ dataTarjeta })}
             />
           )}
         </Grid>
 
-        {/* <Grid >
-            {activeStep > 0 ?
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2, mr: 3 }}
-                onClick={() => setActiveStep(activeStep - 1)}
-              >
-                Atras
-              </Button> :
-              <></>
-            }
-            {activeStep === 2 ?
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-              >
-                Enviar
-              </Button>
-              :
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-                onClick={() => setActiveStep(activeStep + 1)}
-              >
-                Siguiente
-              </Button>
-
-            }
-          </Grid> */}
-
-
-        {/* </form> */}
         <Snackbar
           open={openSnackbar}
           autoHideDuration={6000}
           onClose={handleCloseSnackbar}
-          message="Error al realizar la compra. Intente nuevamente."
+          message={error || "Error al realizar la compra. Intente nuevamente."}
         />
       </Grid>
     </Grid>

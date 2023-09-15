@@ -1,6 +1,6 @@
 import BodySingle from 'dh-marvel/components/layouts/body/single/body-single';
 import { getComic, getComics } from 'dh-marvel/services/marvel/marvel.service';
-import { Comics } from 'interface/character';
+import { Comic,Comics } from 'interface/comic.type';
 import Grid from '@mui/material/Grid';
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Head from 'next/head';
@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 
 
 interface Props {
-  comic: Comics;
+  comic: Comic;
 }
 
 const ComicID: NextPage<Props> = ({ comic }) => {
@@ -24,16 +24,19 @@ const ComicID: NextPage<Props> = ({ comic }) => {
 
     <>
       <Head>
-        <title>DH-MARVEL</title>
-        <meta
-          name="description"
-          content={`Comic de Marvel.${comic.title}`}
-        />
+        <title>Marvel Comics - Compra tus cómics favoritos en línea</title>
+        <meta name="description" content={`Comic de Marvel.${comic.title}`} />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="language" content="es" />
+        <meta name="author" content="Jose Emanuel Nieva Toppa - Digital House" />
+        <meta name="keywords" content="Marvel Comics, cómics, compra en línea, superhéroes, historietas" />
+        <meta name="robots" content="index, follow" />
+        <meta httpEquiv="content-type" content="text/html; charset=UTF-8" />
       </Head>
       <BodySingle title={comic.title}>
         <Grid container>
           <ComicDetail comic={comic} />
-            </Grid>
+        </Grid>
       </BodySingle>
 
     </>
