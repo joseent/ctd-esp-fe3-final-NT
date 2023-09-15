@@ -1,34 +1,3 @@
-
-// export interface Comics {
-// 	key: string;
-// 	id: number;
-// 	title: string;
-// 	description: string;
-// 	url: string;
-// 	thumbnail: Image;
-// 	price: number;
-// 	oldPrice: number;
-// 	stock: number;
-// 	dates: string;
-// 	creators: string;
-// 	characters: CharacterInter[]
-
-
-// }
-
-// export interface CharacterInter {
-// 	name: string;
-// 	resourceURL: string;
-// 	thumbnail: Image;
-// 	description: string;
-// }
-
-
-// interface Image {
-// 	path:string,
-// 	extension: string
-// }
-
 import { ComicSummary, EventList, Image, StoryList, Url } from "./comic.type";
 
 export type Characters = {

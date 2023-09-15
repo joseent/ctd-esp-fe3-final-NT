@@ -61,7 +61,7 @@ export const ComicCard = ({ comicsArr }: ComicsProps) => {
                             <CardContent>
                                 <Tooltip title={comic.title} placement="bottom">
                                     <Typography gutterBottom variant="h5" component="div">
-                                        {cortarYAgregarElipsis(comic.title, 22)}
+                                        {cortarYAgregarElipsis(comic.title, 20)}
                                     </Typography>
                                 </Tooltip>
                             </CardContent>

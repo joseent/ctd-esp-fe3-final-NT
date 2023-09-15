@@ -44,7 +44,6 @@ export const LoadMore = () => {
 
   useEffect(() => {
     if (isEndOfPage) {
-      console.log("in file end");
       loadMoreComics();
 
     }

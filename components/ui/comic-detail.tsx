@@ -1,21 +1,18 @@
 "use client";
 
-import { CharacterInter, Comics } from "interface/character.type";
+import { Comic } from "interface/comic.type";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { useRouter } from "next/router";
 import NextLink from "next/link"
 import Image from "next/image";
 import AccordionComp from "./acordeon";
-import character from "dh-marvel/test/mocks/character";
 
 export interface ComicProps {
-    comic: Comics | null;
+    comic: Comic ;
 
 }
 
@@ -27,15 +24,13 @@ const extractLastNumberFromURL = (url: string) => {
     const numbers = lastPart.match(/\d+/);
 
     if (numbers) {
-        return parseInt(numbers[0]);
+        return numbers[0]
     } else {
-        return null;
+        return "0";
     }
 }
 
 export const ComicDetail = ({ comic }: ComicProps) => {
-    console.log('comic.stock', comic)
-    const router = useRouter();
 
 
     return (
@@ -114,7 +109,9 @@ export const ComicDetail = ({ comic }: ComicProps) => {
                         </Grid>
                     </CardContent>
 
-                    {comic?.characters?.items?.map((char) => (<AccordionComp key={char.id} id={char.id} title={char.name} subtitle={extractLastNumberFromURL(char.resourceURI)} url />))}
+                    {comic?.characters?.items?.map((char, index) => (
+                    <AccordionComp key={char.name} id={index} title={char.name} subtitle={extractLastNumberFromURL(char.resourceURI)} url />
+                    ))}
                     < CardActions >
                         {comic?.stock > 0 ? (
                             <NextLink
