@@ -1,6 +1,6 @@
 "use client";
 
-import { Comics } from "interface/character.type";
+import { Comic } from "interface/comic.type";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -23,7 +23,7 @@ const theme = createTheme({
 
 
 export interface ComicsProps {
-    comic: Comics | null;
+    comic: Comic | null;
 }
 
 
@@ -34,7 +34,7 @@ export const ComicCheckoutCard = ({ comic }: ComicsProps) => {
         <ThemeProvider theme={theme}>
             <Grid item>
                 <Card>
-                    <Image key={comic?.key} src={`${comic?.thumbnail?.path}.${comic?.thumbnail?.extension}`}
+                    <Image key={comic?.id} src={`${comic?.thumbnail?.path}.${comic?.thumbnail?.extension}`}
                         width={600}
                         height={750}
                         alt="Picture of the author" />
