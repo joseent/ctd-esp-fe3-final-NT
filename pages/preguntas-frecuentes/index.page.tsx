@@ -54,7 +54,7 @@ const FaqsPage: NextPage<Props> = ({ faqs }) => {
 export const getStaticProps = async () => {
 
   // Modificar la url por las que nos da Vercel al hacer deploy
-  const response = await fetch(`${URL_DOMAIN}api/faqs`)
+  const response = await fetch(`https://ctd-esp-fe3-final-r8dcnhvf5-joseent.vercel.app/api/faqs`)
   const faqs = await response.json()
 
   return {
