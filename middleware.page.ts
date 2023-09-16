@@ -10,11 +10,11 @@ export function middleware(req:NextRequest, res: NextResponse) {
 
   if(url.includes("/confirmacion-compra") && !cookieConfirmacionCompras) {
     // Si no existe la cookie, redireccionar a la página de login
-    return NextResponse.redirect(`${URL_DOMAIN}:3000/`);
+    return NextResponse.redirect(`${URL_DOMAIN}`);
   }
   if(url.includes("/checkout") && !cookieCheckout) {
     // Si no existe la cookie, redireccionar a la página de login
-    return NextResponse.redirect(`${URL_DOMAIN}:3000/`);
+    return NextResponse.redirect(`${URL_DOMAIN}`);
   }
 
   return NextResponse.next();
