@@ -1,6 +1,6 @@
 // import * as React from 'react';
 
-import { NextPage } from 'next'
+import { GetStaticProps, NextPage } from 'next'
 import { FaqsType } from 'dh-marvel/components/faqs/faqsData';
 import AccordionComp from 'dh-marvel/components/ui/acordeon';
 import { Grid, Snackbar, Typography } from '@mui/material';
@@ -51,10 +51,11 @@ const FaqsPage: NextPage<Props> = ({ faqs }) => {
 
 
 
-export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
 
   // Modificar la url por las que nos da Vercel al hacer deploy
-  const response = await fetch(`https://ctd-esp-fe3-final-r8dcnhvf5-joseent.vercel.app/api/faqs`)
+  const url = 'https://ctd-esp-fe3-final-r8dcnhvf5-joseent.vercel.app/api/faqs';
+  const response = await fetch(url)
   const faqs = await response.json()
 
   return {
