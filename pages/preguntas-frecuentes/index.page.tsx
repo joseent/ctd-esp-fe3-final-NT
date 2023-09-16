@@ -5,6 +5,7 @@ import { FaqsType } from 'dh-marvel/components/faqs/faqsData';
 import AccordionComp from 'dh-marvel/components/ui/acordeon';
 import { Grid, Snackbar, Typography } from '@mui/material';
 import Head from 'next/head';
+import { URL_DOMAIN } from 'constantes/urls';
 
 
 interface Props {
@@ -53,7 +54,7 @@ const FaqsPage: NextPage<Props> = ({ faqs }) => {
 export const getStaticProps = async () => {
 
   // Modificar la url por las que nos da Vercel al hacer deploy
-  const response = await fetch('http://localhost:3000/api/faqs')
+  const response = await fetch(`${URL_DOMAIN}:3000/api/faqs`)
   const faqs = await response.json()
 
   return {
