@@ -7,12 +7,14 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import NextLink from "next/link"
 import Image from "next/image";
 import AccordionComp from "./acordeon";
+import { getComicsById } from "dh-marvel/services/comic/comic.service";
+import { setCookies } from "dh-marvel/services/cookies/cookie.service";
+import { useRouter } from "next/router";
 
 export interface ComicProps {
-    comic: Comic ;
+    comic: Comic;
 
 }
 
@@ -30,7 +32,26 @@ const extractLastNumberFromURL = (url: string) => {
     }
 }
 
+
+
 export const ComicDetail = ({ comic }: ComicProps) => {
+    const router = useRouter();
+    const handleBuy = async (id: number) => {
+        const response: Comic = await getComicsById(id);
+
+
+        if (response.stock > 0) {
+            setCookies()
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            router.push({
+                pathname: "/checkout",
+                query: { id: response.id },
+            });
+        } else {
+            router.push(`/comics/${id}`);
+        }
+    };
 
 
     return (
@@ -110,19 +131,14 @@ export const ComicDetail = ({ comic }: ComicProps) => {
                     </CardContent>
 
                     {comic?.characters?.items?.map((char, index) => (
-                    <AccordionComp key={char.name} id={index} title={char.name} subtitle={extractLastNumberFromURL(char.resourceURI)} url />
+                        <AccordionComp key={char.name} id={index} title={char.name} subtitle={extractLastNumberFromURL(char.resourceURI)} url />
                     ))}
                     < CardActions >
                         {comic?.stock > 0 ? (
-                            <NextLink
-                                href={{ pathname: `/checkout/${comic?.id}` }}
-                            >
-                                <Button
-                                    variant="contained"
-                                >
-                                    COMPRAR
-                                </Button>
-                            </NextLink>
+
+                            < Button onClick={() => handleBuy(comic.id)} color="primary" variant="contained">
+                                COMPRAR
+                            </Button>
                         ) : (
                             <Button
                                 disabled

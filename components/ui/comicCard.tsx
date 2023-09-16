@@ -27,8 +27,6 @@ const cortarYAgregarElipsis = (texto: string, longitudMaxima: number): string =>
 }
 
 
-
-
 export const ComicCard = ({ comicsArr }: ComicsProps) => {
     const router = useRouter();
 
@@ -37,11 +35,12 @@ export const ComicCard = ({ comicsArr }: ComicsProps) => {
 
         if (response.stock > 0) {
             setCookies()
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // router.push({
-            //     pathname: "/checkout",
-            //     query: { id: response.id },
-            // });
+            router.push({
+                pathname: "/checkout",
+                query: { id: response.id },
+            });
         } else {
             router.push(`/comics/${id}`);
         }
